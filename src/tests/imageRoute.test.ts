@@ -1,14 +1,15 @@
 import request from 'supertest';
-import app from '../server'; // Adjust path if needed
+import app from '../server';
 import path from 'path';
 
 describe('Image Processing API Endpoints', () => {
+    console.log(__dirname);
 
     // Test for uploading an image
     it('should upload an image successfully', async () => {
         const response = await request(app)
             .post('/api/image/upload')
-            .attach('image', path.resolve(__dirname, 'testImage.png')); // Ensure testImage.png exists in this path
+            .attach('image', path.resolve(__dirname, 'testImage.png'));
 
         expect(response.status).toBe(200);
         expect(response.body.message).toBe('Image uploaded successfully');
@@ -19,10 +20,11 @@ describe('Image Processing API Endpoints', () => {
         const response = await request(app)
             .post('/api/image/resize')
             .attach('image', path.resolve(__dirname, 'testImage.png'))
-            .send({ width: 100, height: 100 });
+            .field('width', '100')
+            .field('height', '100');
 
         expect(response.status).toBe(200);
-        expect(response.headers['content-type']).toBe('image/png');
+        expect(response.headers['content-type']).toMatch(/^image\/png/);
         expect(response.body).toBeDefined();
     });
 
@@ -31,7 +33,10 @@ describe('Image Processing API Endpoints', () => {
         const response = await request(app)
             .post('/api/image/crop')
             .attach('image', path.resolve(__dirname, 'testImage.png'))
-            .send({ width: 100, height: 100, left: 0, top: 0 });
+            .field('width', '100')
+            .field('height', '100')
+            .field('left', '0')
+            .field('top', '0');
 
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('image/png');
@@ -43,7 +48,7 @@ describe('Image Processing API Endpoints', () => {
         const response = await request(app)
             .post('/api/image/filter')
             .attach('image', path.resolve(__dirname, 'testImage.png'))
-            .send({ filter: 'grayscale' });
+            .field('filter', 'grayscale');
 
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('image/png');
@@ -55,7 +60,7 @@ describe('Image Processing API Endpoints', () => {
         const response = await request(app)
             .post('/api/image/filter')
             .attach('image', path.resolve(__dirname, 'testImage.png'))
-            .send({ filter: 'blur' });
+            .field('filter', 'blur');
 
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('image/png');
@@ -67,12 +72,12 @@ describe('Image Processing API Endpoints', () => {
         const response = await request(app)
             .post('/api/image/watermark')
             .attach('image', path.resolve(__dirname, 'testImage.png'))
-            .send({ text: 'Watermark Text' });
+            .field('text', 'Watermark Text');
 
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('image/png');
         expect(response.body).toBeDefined();
-    });
+    }, 1000);
 
     // Test for downloading a processed image
     it('should return a 400 error if no processedImagePath is provided for download', async () => {

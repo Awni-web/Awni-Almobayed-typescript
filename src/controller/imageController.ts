@@ -5,7 +5,7 @@ import sharp from 'sharp';
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-export const uploadImage = upload.single('image');
+export const uploadImage = upload.single('image'); 
 
 // Resize Image
 export const resizeImage = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -21,7 +21,7 @@ export const resizeImage = async (req: Request, res: Response, next: NextFunctio
             .toBuffer();
         
         res.contentType('image/png');
-        res.send(resizedImage);
+        res.status(200).json({ success: true, message: "Image resized succefully", name: req.body})
     } catch (error) {
         next(error); // Pass the error to the error handling middleware
     }

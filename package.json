@@ -2,9 +2,12 @@
   "name": "image-processing-api",
   "version": "1.0.0",
   "description": "Image Proccessing API",
-  "main": "index.js",
+  "main": "src/server.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "dev": "ts-node src/server.ts"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +17,10 @@
     "express": "^4.21.1",
     "multer": "^1.4.5-lts.1",
     "sharp": "^0.33.5"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "preset": "ts-jest"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
